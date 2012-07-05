@@ -1,0 +1,106 @@
+*TaggedSearchPattern.txt*	Attach names to search patterns for easier recall.
+
+		   TAGGED SEARCH PATTERN    by Ingo Karkat
+						     *TaggedSearchPattern.vim*
+description			|TaggedSearchPattern-description|
+usage				|TaggedSearchPattern-usage|
+installation			|TaggedSearchPattern-installation|
+configuration			|TaggedSearchPattern-configuration|
+integration			|TaggedSearchPattern-integration|
+limitations			|TaggedSearchPattern-limitations|
+known problems			|TaggedSearchPattern-known-problems|
+todo				|TaggedSearchPattern-todo|
+history				|TaggedSearchPattern-history|
+
+==============================================================================
+DESCRIPTION				     *TaggedSearchPattern-description*
+
+You use text searches are the time in Vim. While it's simple to recall
+previous patterns through the |cmdline-history|, quickly recognizing them can
+be hard, especially if it's a long convoluted regular expression that you've
+confidently built some hours ago, but now all variants stored in the history
+look like nearly identical gibberish.
+
+This plugin allows you to "tag" individual searches with a name, so that these
+searches are documented and therefore become easier to recognize and recall.
+
+HOW IT WORKS								     *
+
+Tagged searches reside in the normal search history like all other searches.
+The tagging works by prepending a special regular expression branch that never
+matches any text.
+
+SEE ALSO								     *
+
+RELATED WORKS								     *
+
+Inspired by
+http://stackoverflow.com/questions/10174171/indicator-to-see-from-which-function-a-search-string-comes/
+
+==============================================================================
+USAGE						   *TaggedSearchPattern-usage*
+
+Inside the search command-lines (|:/|, |:?|), tag (and un-tag) the current
+search with CTRL-T, type the tag name, and store and activate the search with
+<Enter> as usual.
+Since tagged searches start with the tag, recall is as simple as entering the
+search command-line via |:/|, typing the first letters of the tag and pressing
+|c_<Up>| (repeatedly if there are many). Or, open the |cmdline-window| via
+|q/|, and search for tags via /^{tag-name}.
+								    *c_CTRL-T*
+CTRL-T			Prepend the search-neutral tag expression and position
+			the cursor before it at the beginning of the
+			command-line, so that the tag can be entered.
+			For the tag, stick to alphanumeric characters
+			(whitespace is okay, too). Do not use characters like
+			\, &, |, etc. that have a special meaning in a regexp!
+
+			When the current search already has been tagged:
+			Remove the tag and the following search-neutral tag
+			expression.
+			You can use CTRL-T CTRL-T to re-tag a tagged search
+			pattern.
+
+==============================================================================
+INSTALLATION				    *TaggedSearchPattern-installation*
+
+This script is packaged as a |vimball|. If you have the "gunzip" decompressor
+in your PATH, simply edit the *.vba.gz package in Vim; otherwise, decompress
+the archive first, e.g. using WinZip. Inside Vim, install by sourcing the
+vimball or via the |:UseVimball| command. >
+    vim TaggedSearchPattern.vba.gz
+    :so %
+To uninstall, use the |:RmVimball| command.
+
+DEPENDENCIES				    *TaggedSearchPattern-dependencies*
+
+- Requires Vim 7.0 or higher.
+
+==============================================================================
+INTEGRATION				     *TaggedSearchPattern-integration*
+
+==============================================================================
+LIMITATIONS				     *TaggedSearchPattern-limitations*
+
+KNOWN PROBLEMS				  *TaggedSearchPattern-known-problems*
+
+TODO						    *TaggedSearchPattern-todo*
+
+IDEAS						   *TaggedSearchPattern-ideas*
+
+==============================================================================
+HISTORY						 *TaggedSearchPattern-history*
+
+GOAL
+First published version.
+
+0.01	06-Jul-2012
+Started development.
+
+==============================================================================
+Copyright: (C) 2012 Ingo Karkat
+The VIM LICENSE applies to this script; see |copyright|.
+
+Maintainer:	Ingo Karkat <ingo@karkat.de>
+==============================================================================
+ vim:tw=78:ts=8:ft=help:norl:
