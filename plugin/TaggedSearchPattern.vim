@@ -18,6 +18,26 @@ if exists('g:loaded_TaggedSearchPattern') || (v:version < 700)
 endif
 let g:loaded_TaggedSearchPattern = 1
 
+"- configuration ---------------------------------------------------------------
+
+if ! exists('g:TaggedSearchPattern_HighlightTags')
+    let g:TaggedSearchPattern_HighlightTags = 1
+endif
+
+
+"- mappings --------------------------------------------------------------------
+
 cnoremap <expr> <C-t> (stridx('/?', getcmdtype()) == -1 ? '<C-t>' : '<C-\>e(TaggedSearchPattern#ToggleTag())<CR>')
+
+nnoremap <silent> <Plug>(TaggedSearchPatternList) q/:call TaggedSearchPattern#Filter()<CR>
+if ! hasmapto('<Plug>(TaggedSearchPatternList)', 'n')
+    nmap q<C-t> <Plug>(TaggedSearchPatternList)
+endif
+
+
+"- highlight groups ------------------------------------------------------------
+
+highlight def link TaggedSearchTag Directory
+highlight def link TaggedSearchNeutral NonText
 
 " vim: set ts=8 sts=4 sw=4 noexpandtab ff=unix fdm=syntax :
