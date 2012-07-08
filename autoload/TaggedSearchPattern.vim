@@ -28,4 +28,21 @@ function! TaggedSearchPattern#ToggleTag()
     endif
 endfunction
 
+function! TaggedSearchPattern#Filter()
+    let l:neutralTagLiteral = '\C\V' . escape(s:neutralTagExpr, '/\')
+
+    execute printf('silent! %vglobal/%s/d _', l:neutralTagLiteral)
+
+    " Deletion messes up the natural window layout, with the last line at the
+    " bottom of the window, and no padding. Fix that.
+    normal! zb
+
+    if g:TaggedSearchPattern_HighlightTags && exists('*matchadd')
+	call matchadd('TaggedSearchTag', '^.\{-}\ze' . l:neutralTagLiteral, 10)
+	call matchadd('TaggedSearchNeutral', l:neutralTagLiteral, 10)
+	" No need to note the returned match ID; the eventual close of the
+	" command-line window will automatically clean this up.
+    endif
+endfunction
+
 " vim: set ts=8 sts=4 sw=4 noexpandtab ff=unix fdm=syntax :
