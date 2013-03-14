@@ -15,7 +15,7 @@ history				|TaggedSearchPattern-history|
 ==============================================================================
 DESCRIPTION				     *TaggedSearchPattern-description*
 
-You use text searches are the time in Vim. While it's simple to recall
+You use text searches are the time in Vim. While it is simple to recall
 previous patterns through the |cmdline-history|, quickly recognizing them can
 be hard, especially if it's a long convoluted regular expression that you've
 confidently built some hours ago, but now all variants stored in the history
@@ -23,6 +23,7 @@ look like nearly identical gibberish.
 
 This plugin allows you to "tag" individual searches with a name, so that these
 searches are documented and therefore become easier to recognize and recall.
+You can also pre-seed your search history with frequently needed searches.
 
 HOW IT WORKS								     *
 
@@ -45,8 +46,10 @@ search with CTRL-T, type the tag name, and store and activate the search with
 <Enter> as usual.
 Since tagged searches start with the tag, recall is as simple as entering the
 search command-line via |:/|, typing the first letters of the tag and pressing
-|c_<Up>| (repeatedly if there are many). Or, open the |cmdline-window| via
-|q/|, and search for tags via /^{tag-name}.
+|c_<Up>| (repeatedly if there are many).
+When you're in the|cmdline-window| via |q/|, just search for tags via /^{tag-name}.
+Or open a filtered view of the search |cmdline-window| through |q_CTRL-T|.
+
 								    *c_CTRL-T*
 CTRL-T			Prepend the search-neutral tag expression and position
 			the cursor before it at the beginning of the
@@ -61,6 +64,22 @@ CTRL-T			Prepend the search-neutral tag expression and position
 			You can use CTRL-T CTRL-T to re-tag a tagged search
 			pattern.
 
+								    *q_CTRL-T*
+q CTRL-T		Open the search command-line window as with |q/| and
+			list only tagged searches. The tag names are
+			highlighted for easier recognition. As usual, <Enter>
+			uses the current search pattern under the cursor, or
+			press CTRL-C to continue editing in Command-line mode.
+
+		 *TaggedSearchPattern-preseed* *TaggedSearchPattern#HistAdd()*
+If you don't use them, tagged searches will eventually be expelled from the
+search history, just like any other search pattern. You can delay this by
+increasing the 'history' setting and the "/" value of 'viminfo'.
+Alternatively, you can automatically define often-used tagged searches
+(globally in .vimrc, or maybe only when certain filetypes are loaded via a
+ftplugin), like this: >
+    call TaggedSearchPattern#HistAdd('mytag', '\<search\d\+\|pattern\>')
+<
 ==============================================================================
 INSTALLATION				    *TaggedSearchPattern-installation*
 
@@ -77,6 +96,20 @@ DEPENDENCIES				    *TaggedSearchPattern-dependencies*
 - Requires Vim 7.0 or higher.
 
 ==============================================================================
+CONFIGURATION				   *TaggedSearchPattern-configuration*
+
+For a permanent configuration, put the following commands into your |vimrc|:
+
+					 *g:TaggedSearchPattern_HighlightTags*
+To turn off the highlighting of the tag name and search-neutral tag expression
+in the search |cmdline-window|: >
+    let g:TaggedSearchPattern_HighlightTags = 0
+<						  *TaggedSearchPattern-colors*
+To change the highlighting colors, redefine or link the two highlight groups: >
+    highlight link TaggedSearchTag Search
+    highlight TaggedSearchNeutral ctermfg=Black guifg=White
+
+==============================================================================
 INTEGRATION				     *TaggedSearchPattern-integration*
 
 ==============================================================================
@@ -91,7 +124,7 @@ IDEAS						   *TaggedSearchPattern-ideas*
 ==============================================================================
 HISTORY						 *TaggedSearchPattern-history*
 
-GOAL
+1.00	09-Jul-2012
 First published version.
 
 0.01	06-Jul-2012
