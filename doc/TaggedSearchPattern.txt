@@ -6,7 +6,6 @@ description			|TaggedSearchPattern-description|
 usage				|TaggedSearchPattern-usage|
 installation			|TaggedSearchPattern-installation|
 configuration			|TaggedSearchPattern-configuration|
-integration			|TaggedSearchPattern-integration|
 limitations			|TaggedSearchPattern-limitations|
 known problems			|TaggedSearchPattern-known-problems|
 todo				|TaggedSearchPattern-todo|
@@ -15,7 +14,7 @@ history				|TaggedSearchPattern-history|
 ==============================================================================
 DESCRIPTION				     *TaggedSearchPattern-description*
 
-You use text searches are the time in Vim. While it is simple to recall
+You use text searches all the time in Vim. While it is simple to recall
 previous patterns through the |cmdline-history|, quickly recognizing them can
 be hard, especially if it's a long convoluted regular expression that you've
 confidently built some hours ago, but now all variants stored in the history
@@ -31,12 +30,18 @@ Tagged searches reside in the normal search history like all other searches.
 The tagging works by prepending a special regular expression branch that never
 matches any text.
 
-SEE ALSO								     *
-
 RELATED WORKS								     *
 
 Inspired by
 http://stackoverflow.com/questions/10174171/indicator-to-see-from-which-function-a-search-string-comes/
+
+An alternative is to append a literal NUL character (^@, enter via <C-V><C-@>)
+after the concluded search pattern, e.g. >
+    /foobar/^@tag here
+Vim will ignore everything after the NUL byte, but it'll still show the whole
+line in the search history, including the tag. (Discovered by glts in
+http://stackoverflow.com/a/20020360/813602) This depends on an implementation
+detail, and the tag position makes it more difficult to search / recall.
 
 ==============================================================================
 USAGE						   *TaggedSearchPattern-usage*
@@ -47,8 +52,9 @@ search with CTRL-T, type the tag name, and store and activate the search with
 Since tagged searches start with the tag, recall is as simple as entering the
 search command-line via |:/|, typing the first letters of the tag and pressing
 |c_<Up>| (repeatedly if there are many).
-When you're in the|cmdline-window| via |q/|, just search for tags via /^{tag-name}.
-Or open a filtered view of the search |cmdline-window| through |q_CTRL-T|.
+When you're in the |cmdline-window| via |q/|, just search for tags via
+/^{tag-name}. Or open a filtered view of the search |cmdline-window| through
+|q_CTRL-T|.
 
 								    *c_CTRL-T*
 CTRL-T			Prepend the search-neutral tag expression and position
@@ -110,9 +116,6 @@ To change the highlighting colors, redefine or link the two highlight groups: >
     highlight TaggedSearchNeutral ctermfg=Black guifg=White
 
 ==============================================================================
-INTEGRATION				     *TaggedSearchPattern-integration*
-
-==============================================================================
 LIMITATIONS				     *TaggedSearchPattern-limitations*
 
 KNOWN PROBLEMS				  *TaggedSearchPattern-known-problems*
@@ -131,7 +134,7 @@ First published version.
 Started development.
 
 ==============================================================================
-Copyright: (C) 2012 Ingo Karkat
+Copyright: (C) 2012-2013 Ingo Karkat
 The VIM LICENSE applies to this plugin; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
