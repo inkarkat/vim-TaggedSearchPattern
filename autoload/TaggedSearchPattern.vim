@@ -8,6 +8,9 @@
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.10.004	01-Nov-2016	ENH: Allow unique tags, identified via
+"				g:TaggedSearchPattern_UniqueTagPattern or forced
+"				via different mapping.
 "   1.01.003	01-Nov-2016	Minor: Remove q<C-t> filter pattern from search
 "				history.
 "   1.00.002	09-Jul-2012	Do the highlighting for all opened search
@@ -17,12 +20,45 @@
 "				function.
 "	001	06-Jul-2012	file creation
 
-function! TaggedSearchPattern#ToggleTag()
+let s:save_updatetime = &updatetime
+function! s:InstallCommandLineHook( isMakeUnique )
+    if ! a:isMakeUnique && empty(g:TaggedSearchPattern_UniqueTagPattern)
+	return
+    endif
+
+    " A straightforward hook would be a cmap on <CR>. But there may be mapping
+    " contention around <CR>, and there are issues with opening folds at the
+    " search result, and not triggering expansion of :cabbrev any more.
+    " Therefore, we define a fire-once autocmd that should trigger soon after
+    " leaving command-line mode.
+    if &updatetime > 1 | let s:save_updatetime = &updatetime | endif
+    set updatetime=1
+    augroup TaggedSearchPatternUniqueHook
+	execute printf('autocmd! CursorHold,CursorMoved * call TaggedSearchPattern#MakeCurrentTagUnique(%d) | set updatetime=%d | autocmd! TaggedSearchPatternUniqueHook', a:isMakeUnique, s:save_updatetime)
+    augroup END
+endfunction
+function! TaggedSearchPattern#MakeCurrentTagUnique( isMakeUnique )
+    let l:neutralTagExprStartPos = stridx(@/, g:TaggedSearchPattern_NeutralTagExpr)
+    if l:neutralTagExprStartPos == -1
+	return
+    endif
+    let l:tag = strpart(@/, 0, l:neutralTagExprStartPos)
+    if ! a:isMakeUnique && l:tag !~# g:TaggedSearchPattern_UniqueTagPattern
+	return
+    endif
+
+    let l:lastSearchHistory = histget('search', -1)
+    let l:tagLiteralExpr = '\C\V\^' . escape(l:tag, '\') . escape(g:TaggedSearchPattern_NeutralTagExpr, '\')
+    call histdel('search', l:tagLiteralExpr)
+    call histadd('search', l:lastSearchHistory)
+endfunction
+function! TaggedSearchPattern#ToggleTag( isMakeUnique )
     let l:cmdline = getcmdline()
 
     let l:neutralTagExprStartPos = stridx(l:cmdline, g:TaggedSearchPattern_NeutralTagExpr)
     if l:neutralTagExprStartPos == -1
 	call setcmdpos(1)
+	call s:InstallCommandLineHook(a:isMakeUnique)
 	return g:TaggedSearchPattern_NeutralTagExpr . l:cmdline
     else
 	let l:tagLen = l:neutralTagExprStartPos + len(g:TaggedSearchPattern_NeutralTagExpr)
@@ -33,14 +69,16 @@ function! TaggedSearchPattern#ToggleTag()
     endif
 endfunction
 
-function! TaggedSearchPattern#HistAdd( tag, pattern )
+function! TaggedSearchPattern#HistAdd( tag, pattern, ... )
+    let l:isMakeUnique = (a:0 ? a:1 : 0)
     call histadd('search', a:tag . g:TaggedSearchPattern_NeutralTagExpr . a:pattern)
+    call TaggedSearchPattern#MakeCurrentTagUnique(l:isMakeUnique)
 endfunction
 
 function! TaggedSearchPattern#Filter()
-    let l:neutralTagLiteral = '\C\V' . escape(g:TaggedSearchPattern_NeutralTagExpr, '/\')
+    let l:neutralTagLiteralExpr = '\C\V' . escape(g:TaggedSearchPattern_NeutralTagExpr, '/\')
 
-    execute printf('silent! %vglobal/%s/delete _', l:neutralTagLiteral)
+    execute printf('silent! %vglobal/%s/delete _', l:neutralTagLiteralExpr)
 
     " Deletion messes up the natural window layout, with the last line at the
     " bottom of the window, and no padding. Fix that.
