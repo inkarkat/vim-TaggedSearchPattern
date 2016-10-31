@@ -111,7 +111,8 @@ To turn off the highlighting of the tag name and search-neutral tag expression
 in the search |cmdline-window|: >
     let g:TaggedSearchPattern_HighlightTags = 0
 <						  *TaggedSearchPattern-colors*
-To change the highlighting colors, redefine or link the two highlight groups: >
+To change the highlighting colors, redefine (after any |:colorscheme| command)
+or link the two highlight groups: >
     highlight link TaggedSearchTag Search
     highlight TaggedSearchNeutral ctermfg=Black guifg=White
 
@@ -134,7 +135,7 @@ First published version.
 Started development.
 
 ==============================================================================
-Copyright: (C) 2012-2013 Ingo Karkat
+Copyright: (C) 2012-2014 Ingo Karkat
 The VIM LICENSE applies to this plugin; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
