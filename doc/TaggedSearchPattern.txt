@@ -67,9 +67,13 @@ CTRL-T			Prepend the search-neutral tag expression and position
 			When the current search already has been tagged:
 			Remove the tag and the following search-neutral tag
 			expression.
-			You can use CTRL-T CTRL-T to re-tag a tagged search
+			You can use CTRL-T CTRL-T to rename a tagged search
 			pattern.
-
+							     *c_CTRL-G_CTRL-T*
+CTRL-G CTRL-T		Like |c_CTRL-T|, but ensure that the search tag will
+			be unique in the search history (by removing any
+			previous searches with the same tag)
+			|g:TaggedSearchPattern_UniqueTagPattern|
 								    *q_CTRL-T*
 q CTRL-T		Open the search command-line window as with |q/| and
 			list only tagged searches. The tag names are
@@ -85,15 +89,16 @@ Alternatively, you can automatically define often-used tagged searches
 (globally in .vimrc, or maybe only when certain filetypes are loaded via a
 ftplugin), like this: >
     call TaggedSearchPattern#HistAdd('mytag', '\<search\d\+\|pattern\>')
+    call TaggedSearchPattern#HistAdd('unique', '\<pattern\>', 1)
 <
 ==============================================================================
 INSTALLATION				    *TaggedSearchPattern-installation*
 
 This script is packaged as a |vimball|. If you have the "gunzip" decompressor
-in your PATH, simply edit the *.vba.gz package in Vim; otherwise, decompress
+in your PATH, simply edit the *.vmb.gz package in Vim; otherwise, decompress
 the archive first, e.g. using WinZip. Inside Vim, install by sourcing the
 vimball or via the |:UseVimball| command. >
-    vim TaggedSearchPattern.vba.gz
+    vim TaggedSearchPattern*.vmb.gz
     :so %
 To uninstall, use the |:RmVimball| command.
 
@@ -106,6 +111,15 @@ CONFIGURATION				   *TaggedSearchPattern-configuration*
 
 For a permanent configuration, put the following commands into your |vimrc|:
 
+				      *g:TaggedSearchPattern_UniqueTagPattern*
+For certain tag names, you can ensure that each tagged search pattern only
+exists once in the search history (previous patterns with the same tag are
+deleted). By default, any tag name ending with a "!" is a unique one: >
+    let g:TaggedSearchPattern_UniqueTagPattern = '.!$'
+To make all tag searches unique, use this: >
+    let g:TaggedSearchPattern_UniqueTagPattern = '.'
+<
+
 					 *g:TaggedSearchPattern_HighlightTags*
 To turn off the highlighting of the tag name and search-neutral tag expression
 in the search |cmdline-window|: >
@@ -115,7 +129,15 @@ To change the highlighting colors, redefine (after any |:colorscheme| command)
 or link the two highlight groups: >
     highlight link TaggedSearchTag Search
     highlight TaggedSearchNeutral ctermfg=Black guifg=White
-
+<
+						   *TaggedSearchPattern-remap*
+If you want to use different mappings, map your keys to the
+<Plug>(TaggedSearchPattern...) mapping targets _before_ sourcing the script
+(e.g. in your |vimrc|): >
+    cmap <C-t> <Plug>(TaggedSearchPatternToggle)
+    cmap <C-g><C-t> <Plug>(TaggedSearchPatternUniqueToggle)
+    nmap q<C-t> <Plug>(TaggedSearchPatternList)
+<
 ==============================================================================
 LIMITATIONS				     *TaggedSearchPattern-limitations*
 
@@ -128,6 +150,13 @@ IDEAS						   *TaggedSearchPattern-ideas*
 ==============================================================================
 HISTORY						 *TaggedSearchPattern-history*
 
+1.10	RELEASEME
+- Make <C-t> mapping configurable.
+- ENH: Allow unique tags, identified via
+  g:TaggedSearchPattern_UniqueTagPattern or forced via different mapping.
+- Add <C-g><C-t> variant that enforces unique tag.
+- Minor: Remove q<C-t> filter pattern from search history.
+
 1.00	09-Jul-2012
 First published version.
 
@@ -135,7 +164,7 @@ First published version.
 Started development.
 
 ==============================================================================
-Copyright: (C) 2012-2014 Ingo Karkat
+Copyright: (C) 2012-2016 Ingo Karkat
 The VIM LICENSE applies to this plugin; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
