@@ -2,12 +2,14 @@
 "
 " DEPENDENCIES:
 "
-" Copyright: (C) 2012 Ingo Karkat
+" Copyright: (C) 2012-2016 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.01.003	01-Nov-2016	Minor: Remove q<C-t> filter pattern from search
+"				history.
 "   1.00.002	09-Jul-2012	Do the highlighting for all opened search
 "				command-line windows, not just the ones opened
 "				via q<C-T>.
@@ -38,11 +40,13 @@ endfunction
 function! TaggedSearchPattern#Filter()
     let l:neutralTagLiteral = '\C\V' . escape(g:TaggedSearchPattern_NeutralTagExpr, '/\')
 
-    execute printf('silent! %vglobal/%s/d _', l:neutralTagLiteral)
+    execute printf('silent! %vglobal/%s/delete _', l:neutralTagLiteral)
 
     " Deletion messes up the natural window layout, with the last line at the
     " bottom of the window, and no padding. Fix that.
     normal! zb
+
+    call histdel('search', -1)
 endfunction
 
 " vim: set ts=8 sts=4 sw=4 noexpandtab ff=unix fdm=syntax :
