@@ -4,12 +4,16 @@
 "   - Requires Vim 7.0 or higher.
 "   - TaggedSearchPattern.vim autoload script
 "
-" Copyright: (C) 2012 Ingo Karkat
+" Copyright: (C) 2012-2016 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.10.003	01-Nov-2016	Make <C-t> mapping configurable.
+"				Add g:TaggedSearchPattern_UniqueTagPattern
+"				configuration.
+"				Add <C-g><C-t> variant that enforces unique tag.
 "   1.00.002	09-Jul-2012	Make g:TaggedSearchPattern_NeutralTagExpr
 "				configurable and accessible for the plugin
 "				script.
@@ -29,6 +33,10 @@ let g:loaded_TaggedSearchPattern = 1
 if ! exists('g:TaggedSearchPattern_NeutralTagExpr')
     " Note: This must be a regexp that never matches anywhere.
     let g:TaggedSearchPattern_NeutralTagExpr = '\%$%\|'
+endif
+
+if ! exists('g:TaggedSearchPattern_UniqueTagPattern')
+    let g:TaggedSearchPattern_UniqueTagPattern = '.!$'
 endif
 
 if ! exists('g:TaggedSearchPattern_HighlightTags')
@@ -56,7 +64,14 @@ endif
 
 "- mappings --------------------------------------------------------------------
 
-cnoremap <expr> <C-t> (stridx('/?', getcmdtype()) == -1 ? '<C-t>' : '<C-\>e(TaggedSearchPattern#ToggleTag())<CR>')
+cnoremap <expr> <Plug>(TaggedSearchPatternToggle) (stridx('/?', getcmdtype()) == -1 ? '<C-t>' : '<C-\>e(TaggedSearchPattern#ToggleTag(0))<CR>')
+if ! hasmapto('<Plug>(TaggedSearchPatternToggle)', 'c')
+    cmap <C-t> <Plug>(TaggedSearchPatternToggle)
+endif
+cnoremap <expr> <Plug>(TaggedSearchPatternUniqueToggle) (stridx('/?', getcmdtype()) == -1 ? '<C-t>' : '<C-\>e(TaggedSearchPattern#ToggleTag(1))<CR>')
+if ! hasmapto('<Plug>(TaggedSearchPatternUniqueToggle)', 'c')
+    cmap <C-g><C-t> <Plug>(TaggedSearchPatternUniqueToggle)
+endif
 
 nnoremap <silent> <Plug>(TaggedSearchPatternList) q/:call TaggedSearchPattern#Filter()<CR>
 if ! hasmapto('<Plug>(TaggedSearchPatternList)', 'n')
