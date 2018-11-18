@@ -149,7 +149,7 @@ below).
 HISTORY
 ------------------------------------------------------------------------------
 
-##### 1.10    RELEASEME
+##### 1.10    18-Nov-2018
 - Make <C-t> mapping configurable.
 - ENH: Allow unique tags, identified via
   g:TaggedSearchPattern\_UniqueTagPattern or forced via different mapping.

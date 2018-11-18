@@ -4,23 +4,10 @@
 "   - Requires Vim 7.0 or higher.
 "   - TaggedSearchPattern.vim autoload script
 "
-" Copyright: (C) 2012-2016 Ingo Karkat
+" Copyright: (C) 2012-2018 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
-"
-" REVISION	DATE		REMARKS
-"   1.10.003	01-Nov-2016	Make <C-t> mapping configurable.
-"				Add g:TaggedSearchPattern_UniqueTagPattern
-"				configuration.
-"				Add <C-g><C-t> variant that enforces unique tag.
-"   1.00.002	09-Jul-2012	Make g:TaggedSearchPattern_NeutralTagExpr
-"				configurable and accessible for the plugin
-"				script.
-"				Do the highlighting for all opened search
-"				command-line windows, not just the ones opened
-"				via q<C-T>.
-"	001	06-Jul-2012	file creation
 
 " Avoid installing twice or when in unsupported Vim version.
 if exists('g:loaded_TaggedSearchPattern') || (v:version < 700)
